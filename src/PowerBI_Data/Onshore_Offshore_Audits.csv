@@ -1,0 +1,13 @@
+Date,InteractionID,AuditType,Brand,Team,Analyst,Metric,TeamLeader,Agent,ActualScore,TargetScore,Variance,AuditOutcome,ImpactRating,RootCause
+2026-11-01,INT-8091,Onshore,Bright Insurance,Alpha,Sarah Jenkins,Renewals,Mark Stevens,Sarah Jenkins,95,90,5,Pass,Low,Clear policy terms explanation and accurate renewal premium validation.
+2026-11-01,INT-8094,Offshore,General Insurance,Beta,Sarah Jenkins,Vulnerable Customers,Mark Stevens,Sarah Jenkins,82,90,-8,Fail,High,Did not offer breathing space option during financial hardship statement.
+2026-11-02,INT-8105,Onshore,Bright Insurance,Alpha,Sarah Jenkins,Complaints,Mark Stevens,Sarah Jenkins,100,95,5,Pass,Low,Excellent de-escalation of cancellation fee query.
+2026-11-03,INT-8120,Offshore,Grand Insurance,Alpha,Sarah Jenkins,BCTU,Mark Stevens,Sarah Jenkins,88,92,-4,Fail,Medium,Omitted mandatory script statement on storm cover endorsement.
+2026-11-01,INT-8092,Offshore,General Insurance,Beta,David Miller,Amendments,Mark Stevens,David Miller,78,90,-12,Fail,High,Incorrect excess amount applied during mid-term home policy alteration.
+2026-11-02,INT-8108,Onshore,General Insurance,Beta,David Miller,Amendments,Mark Stevens,David Miller,85,90,-5,Fail,Medium,Failure to verify building rebuild cost calculator inputs correctly.
+2026-11-03,INT-8122,Offshore,Bright Insurance,Gamma,David Miller,Remedial Actions,Mark Stevens,David Miller,90,90,0,Pass,Low,Remediation coaching completed; re-audit verified process compliance.
+2026-11-01,INT-8093,Onshore,Grand Insurance,Gamma,Elena Rostova,BCTU,Rachel Vance,Elena Rostova,96,92,4,Pass,Low,Flawless compliance check on high-value jewelry endorsement.
+2026-11-02,INT-8110,Offshore,Bright Insurance,Gamma,Elena Rostova,Vulnerable Customers,Rachel Vance,Elena Rostova,94,90,4,Pass,Low,Empathetic handling of flood damage claim and priority callback logged.
+2026-11-03,INT-8125,Onshore,General Insurance,Alpha,Elena Rostova,Complaints,Rachel Vance,Elena Rostova,92,90,2,Pass,Low,Clear explanation of excess deduction resolved customer grievance.
+2026-11-01,INT-8096,Offshore,Bright Insurance,Beta,Marcus Vance,Renewals,Rachel Vance,Marcus Vance,75,90,-15,Fail,High,Failed to disclose automatic renewal opt-out clause requirements.
+2026-11-02,INT-8112,Onshore,Grand Insurance,Gamma,Marcus Vance,Remedial Actions,Rachel Vance,Marcus Vance,88,90,-2,Fail,Medium,Delay in issuing revised policy schedule following complaint resolution.

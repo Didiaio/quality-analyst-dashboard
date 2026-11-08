@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quality Analyst Executive Dashboard (Offline Enterprise Edition)</title>
+    <style>
+        /* ==========================================================================
+           NATIVE PURE CSS STYLING - ZERO FRAMEWORKS & NO EXTERNAL DEPENDENCIES
+           ========================================================================== */
+        
+        :root {
+            --bg-main: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-header: #0f172a;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent-primary: #0284c7;
+            --accent-primary-hover: #0369a1;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-purple: #8b5cf6;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header & Top Navigation --- */
+        header {
+            background-color: var(--bg-header);
+            color: #ffffff;
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            box-shadow: var(--shadow-md);
+            border-b: 1px solid #1e293b;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            background: var(--accent-primary);
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .brand-text h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #1e293b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-success);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* --- Buttons & Inputs --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #334155;
+            color: #f8fafc;
+            border-color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--accent-primary);
+            border-color: #bae6fd;
+            background: #f0f9ff;
+        }
+
+        .btn-outline:hover {
+            background-color: #e0f2fe;
+        }
+
+        /* --- Main Layout --- */
+        main {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            flex-grow: 1;
+        }
+
+        /* --- Filter Bar --- */
+        .filter-bar {
+            background-color: var(--bg-surface);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        select {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+        }
+
+        /* --- KPI Grid (6 Metrics) --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1rem;
+        }
+
+        .kpi-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .kpi-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .kpi-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: var(--text-secondary);
+        }
+
+        .kpi-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .kpi-footer {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .status-pass { background: #dcfce7; color: #15803d; }
+        .status-warn { background: #fef3c7; color: #b45309; }
+        .status-fail { background: #ffe4e6; color: #be123c; }
+
+        /* --- Visualizations Section --- */
+        .dashboard-grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .chart-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .svg-container {
+            width: 100%;
+            height: 250px;
+            position: relative;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* --- Alerts Area --- */
+        .alerts-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .alert-banner {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--accent-danger);
+            background: #fff1f2;
+            color: #9f1239;
+        }
+
+        /* --- Outcomes & Isolated Table --- */
+        .table-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* --- PowerShell Drawer / Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(2px);
+            z-index: 100;
+            display: none;
+            justify-content: flex-end;
+        }
+
+        .modal-drawer {
+            width: 100%;
+            max-width: 600px;
+            background: #0f172a;
+            color: #f8fafc;
+            height: 100%;
+            box-shadow: -4px 0 25px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1rem 1.25rem;
+            background: #020617;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.25rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+
+        pre {
+            background: #020617;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #1e293b;
+            color: #38bdf8;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .console-box {
+            background: #000000;
+            border: 1px solid #1e293b;
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            min-height: 100px;
+            color: #4ade80;
+            font-size: 0.75rem;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="brand-title">
+                <div class="brand-icon">QA</div>
+                <div class="brand-text">
+                    <h1>Quality Analyst Executive Dashboard</h1>
+                    <p>Standard Architecture • Standalone Offline Engine</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="badge-live">
+                    <span class="pulse-dot"></span>
+                    <span>Local State Active</span>
+                    <span>|</span>
+                    <span id="last-updated">Updated: Just Now</span>
+                </div>
+                <button class="btn btn-secondary" onclick="toggleModal(true)">
+                    <span>PowerShell Pipeline</span>
+                </button>
+                <button class="btn btn-outline" onclick="exportCSV()">
+                    <span>Export CSV</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY CONTENT -->
+    <main>
+
+        <!-- GLOBAL FILTER BAR -->
+        <section class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">Filters:</span>
+                
+                <select id="filter-date" onchange="applyFilters()">
+                    <option value="7days" selected>Last 7 Days</option>
+                    <option value="30days">Last 30 Days</option>
+                </select>
+
+                <select id="filter-metric" onchange="applyFilters()">
+                    <option value="all">All 6 Core Metrics</option>
+                    <option value="Renewals">Renewals</option>
+                    <option value="Amendments">Amendments</option>
+                    <option value="Vulnerable Customers">Vulnerable Customers</option>
+                    <option value="Complaints">Complaints</option>
+                    <option value="BCTU">BCTU</option>
+                    <option value="Remedial Actions">Remedial Actions</option>
+                </select>
+
+                <select id="filter-team" onchange="applyFilters()">
+                    <option value="all">All Teams</option>
+                    <option value="Alpha">Alpha Assurance</option>
+                    <option value="Beta">Beta Audits</option>
+                    <option value="Gamma">Gamma Compliance</option>
+                </select>
+
+                <select id="filter-analyst" onchange="applyFilters()">
+                    <option value="all">All Analysts</option>
+                    <option value="Sarah Jenkins">Sarah Jenkins</option>
+                    <option value="Marcus Vance">Marcus Vance</option>
+                    <option value="Elena Rostova">Elena Rostova</option>
+                    <option value="David Miller">David Miller</option>
+                </select>
+            </div>
+
+            <button class="btn btn-outline" onclick="applyFilters()">
+                <span>Apply Filters</span>
+            </button>
+        </section>
+
+        <!-- KPI SUMMARY CARDS (6 METRICS) -->
+        <section class="kpi-grid" id="kpi-cards-wrapper">
+            <!-- Dynamically Rendered by JS -->
+        </section>
+
+        <!-- ALERTS CONTAINER -->
+        <section class="alerts-wrapper" id="alerts-wrapper">
+            <!-- Dynamic alerts -->
+        </section>
+
+        <!-- VISUALIZATIONS GRID -->
+        <section class="dashboard-grid-2">
+            <!-- Native SVG Line Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Quality Compliance Trend</div>
+                        <div class="chart-subtitle">Average pass score over selected dates (Native SVG)</div>
+                    </div>
+                </div>
+                <div class="svg-container" id="line-chart-box">
+                    <!-- SVG Injected Here -->
+                </div>
+            </div>
+
+            <!-- Native SVG Bar Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Analyst Audit Volume</div>
+                        <div class="chart-subtitle">Total audits processed per analyst (Native SVG)</div>
+                    </div>
+                </div>
+                <div class="svg-container" id="bar-chart-box">
+                    <!-- SVG Injected Here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIONABLE OUTCOMES & ISOLATED METRICS TABLE -->
+        <section class="table-card">
+            <div class="table-header">
+                <div>
+                    <div class="chart-title">Isolated Areas of Impact & Actionable Recommendations</div>
+                    <div class="chart-subtitle">Direct findings extracted from audit data</div>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Total Records: <strong id="record-count" style="color: var(--text-primary);">0</strong></span>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Issue / Markdown Reason</th>
+                            <th>ID</th>
+                            <th>Analyst (Team)</th>
+                            <th>Severity</th>
+                            <th>Recommended Action Plan</th>
+                            <th style="text-align: right;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="outcomes-table-body">
+                        <!-- Dynamically Injected -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- POWERSHELL DRAWER MODAL -->
+    <div class="modal-overlay" id="powershell-modal">
+        <div class="modal-drawer">
+            <div class="modal-header">
+                <div>
+                    <h3 style="font-size: 0.9rem; font-weight: 700;">PowerShell Ingestion Pipeline</h3>
+                    <p style="font-size: 0.7rem; color: #94a3b8;">Local Excel/CSV to JSON Converter Engine</p>
+                </div>
+                <button onclick="toggleModal(false)" style="background:none; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-family: var(--font-family); color: #cbd5e1; font-size: 0.75rem;">
+                    This script imports PowerBI CSV exports and updates the local JS data file (<code style="color: #38bdf8;">data.js</code>) consumed directly by this HTML file without a web server.
+                </p>
+
+                <pre>
+<span style="color: #64748b;"># PowerShell Script: Sync-QAData.ps1</span>
+<span style="color: #38bdf8;">$csvPath</span> = <span style="color: #fde047;">".\PowerBI_Exports\QA_Metrics.csv"</span>
+<span style="color: #38bdf8;">$jsPath</span>  = <span style="color: #fde047;">".\data.js"</span>
+
+<span style="color: #c084fc;">Write-Host</span> <span style="color: #fde047;">"[RUN] Processing raw audit data..."</span> -ForegroundColor Cyan
+<span style="color: #38bdf8;">$data</span> = <span style="color: #c084fc;">Import-Csv</span> -Path <span style="color: #38bdf8;">$csvPath</span>
+<span style="color: #38bdf8;">$json</span> = <span style="color: #38bdf8;">$data</span> | <span style="color: #c084fc;">ConvertTo-Json</span> -Depth 4 -Compress
+<span style="color: #38bdf8;">$jsContent</span> = <span style="color: #fde047;">"window.dashboardData = $json;"</span>
+
+<span style="color: #c084fc;">Set-Content</span> -Path <span style="color: #38bdf8;">$jsPath</span> -Value <span style="color: #38bdf8;">$jsContent</span> -Encoding UTF8
+<span style="color: #c084fc;">Write-Host</span> <span style="color: #fde047;">"[SUCCESS] data.js generated successfully!"</span> -ForegroundColor Green
+</pre>
+
+                <button class="btn btn-primary" onclick="simulatePowerShellRun()" id="ps-run-btn" style="width: 100%; justify-content: center;">
+                    Execute PowerShell Pipeline Simulation
+                </button>
+
+                <div class="console-box" id="ps-console">
+                    > Script Ready. Awaiting execution trigger...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMBEDDED LOCAL DATASET (`window.dashboardData` fallback / simulation) -->
+    <script>
+        window.dashboardData = [
+            { id: "QA-1092", date: "2026-11-01", metric: "Complaints", team: "Alpha", analyst: "Sarah Jenkins", score: 78.5, target: 95.0, markdownReason: "Incorrect Dispute Process", severity: "High", action: "Re-train on Section 4 Escalation Guidelines" },
+            { id: "QA-1093", date: "2026-11-01", metric: "Vulnerable Customers", team: "Beta", analyst: "Marcus Vance", score: 82.0, target: 95.0, markdownReason: "Missed Vulnerability Flag", severity: "High", action: "Conduct 1-on-1 coaching on identification protocol" },
+            { id: "QA-1094", date: "2026-11-01", metric: "Renewals", team: "Gamma", analyst: "Elena Rostova", score: 98.0, target: 90.0, markdownReason: "None", severity: "Low", action: "Standard monitoring" },
+            { id: "QA-1095", date: "2026-10-31", metric: "BCTU", team: "Alpha", analyst: "David Miller", score: 88.0, target: 95.0, markdownReason: "Incomplete Audit Trail", severity: "Medium", action: "Issue mandatory checklist requirement for closure" },
+            { id: "QA-1096", date: "2026-10-31", metric: "Amendments", team: "Beta", analyst: "Sarah Jenkins", score: 94.5, target: 90.0, markdownReason: "Minor Typos in Clause", severity: "Low", action: "Provide feedback in weekly review" },
+            { id: "QA-1097", date: "2026-10-30", metric: "Remedial Actions", team: "Gamma", analyst: "Marcus Vance", score: 91.0, target: 95.0, markdownReason: "Delayed SLA Resolution", severity: "Medium", action: "Escalate pending tasks to Team Manager" },
+            { id: "QA-1098", date: "2026-10-30", metric: "Complaints", team: "Alpha", analyst: "Elena Rostova", score: 96.0, target: 95.0, markdownReason: "None", severity: "Low", action: "No action required" },
+            { id: "QA-1099", date: "2026-10-29", metric: "Vulnerable Customers", team: "Beta", analyst: "David Miller", score: 74.0, target: 95.0, markdownReason: "Disclosure Omission", severity: "Critical", action: "Immediate compliance re-certification mandated" },
+            { id: "QA-1100", date: "2026-10-29", metric: "Renewals", team: "Gamma", analyst: "Sarah Jenkins", score: 99.0, target: 90.0, markdownReason: "None", severity: "Low", action: "Good practice recognition" },
+            { id: "QA-1101", date: "2026-10-28", metric: "Amendments", team: "Alpha", analyst: "Marcus Vance", score: 89.0, target: 90.0, markdownReason: "Calculation Error", severity: "Medium", action: "Re-check math verification steps" },
+            { id: "QA-1102", date: "2026-10-28", metric: "BCTU", team: "Beta", analyst: "Elena Rostova", score: 97.5, target: 95.0, markdownReason: "None", severity: "Low", action: "Standard monitoring" },
+            { id: "QA-1103", date: "2026-10-27", metric: "Remedial Actions", team: "Gamma", analyst: "David Miller", score: 85.0, target: 95.0, markdownReason: "Incorrect Action Categorization", severity: "High", action: "Review BCTU taxonomy framework" }
+        ];
+    </script>
+
+    <!-- VANILLA JS CORE LOGIC & SVG CHART GENERATOR ENGINE -->
+    <script>
+        const CORE_METRICS = ["Renewals", "Amendments", "Vulnerable Customers", "Complaints", "BCTU", "Remedial Actions"];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            applyFilters();
+        });
+
+        // Filter Pipeline
+        function applyFilters() {
+            const metric = document.getElementById("filter-metric").value;
+            const team = document.getElementById("filter-team").value;
+            const analyst = document.getElementById("filter-analyst").value;
+
+            let data = [...window.dashboardData];
+
+            if (metric !== 'all') data = data.filter(d => d.metric === metric);
+            if (team !== 'all') data = data.filter(d => d.team === team);
+            if (analyst !== 'all') data = data.filter(d => d.analyst === analyst);
+
+            renderKPICards(data);
+            renderAlerts(data);
+            renderNativeSVGLineChart(data);
+            renderNativeSVGBarChart(data);
+            renderTable(data);
+        }
+
+        // Render Cards
+        function renderKPICards(data) {
+            const wrapper = document.getElementById("kpi-cards-wrapper");
+            wrapper.innerHTML = "";
+
+            CORE_METRICS.forEach(mKey => {
+                const metricItems = data.filter(d => d.metric === mKey);
+                const count = metricItems.length;
+                const avg = count > 0 
+                    ? (metricItems.reduce((acc, c) => acc + c.score, 0) / count).toFixed(1)
+                    : "N/A";
+
+                const isPass = avg !== "N/A" && parseFloat(avg) >= 90;
+                const badgeClass = avg === "N/A" ? "" : (isPass ? "status-pass" : "status-fail");
+
+                wrapper.innerHTML += `
+                    <div class="kpi-card">
+                        <div>
+                            <div class="kpi-header">
+                                <span class="kpi-title">${mKey}</span>
+                                <span class="kpi-tag">${count} Audits</span>
+                            </div>
+                            <div class="kpi-value">${avg}${avg !== "N/A" ? "%" : ""}</div>
+                        </div>
+                        <div class="kpi-footer">
+                            <span>Target: 90%</span>
+                            <span class="status-badge ${badgeClass}">${isPass ? 'PASS' : (avg === 'N/A' ? 'N/A' : 'ATTN')}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Critical Alerts
+        function renderAlerts(data) {
+            const wrapper = document.getElementById("alerts-wrapper");
+            wrapper.innerHTML = "";
+            const criticals = data.filter(d => d.severity === "Critical" || d.score < 80);
+
+            criticals.forEach(c => {
+                wrapper.innerHTML += `
+                    <div class="alert-banner">
+                        <span><strong>ALERT:</strong> Audit <strong>${c.id}</strong> (${c.metric}) for <strong>${c.analyst}</strong> scored <span style="text-decoration: underline;">${c.score}%</span> due to ${c.markdownReason}.</span>
+                        <button class="btn btn-outline" style="font-size:0.7rem; padding: 2px 8px;" onclick="isolateAnalyst('${c.analyst}')">Isolate Analyst</button>
+                    </div>
+                `;
+            });
+        }
+
+        function isolateAnalyst(name) {
+            document.getElementById("filter-analyst").value = name;
+            applyFilters();
+        }
+
+        // Pure Native SVG Line Chart Generator
+        function renderNativeSVGLineChart(data) {
+            const box = document.getElementById("line-chart-box");
+            if (!data.length) {
+                box.innerHTML = `<div style="text-align:center; padding-top:80px; color:var(--text-muted);">No Data Available</div>`;
+                return;
+            }
+
+            const dates = [...new Set(data.map(d => d.date))].sort();
+            const points = dates.map((d, index) => {
+                const dayItems = data.filter(i => i.date === d);
+                const avg = dayItems.reduce((a, b) => a + b.score, 0) / dayItems.length;
+                return { x: index, y: avg, label: d };
+            });
+
+            const svgWidth = 500;
+            const svgHeight = 200;
+            const padding = 30;
+
+            const minX = 0;
+            const maxX = Math.max(points.length - 1, 1);
+            const minY = 60;
+            const maxY = 100;
+
+            const coords = points.map(p => {
+                const cx = padding + (p.x / maxX) * (svgWidth - padding * 2);
+                const cy = svgHeight - padding - ((p.y - minY) / (maxY - minY)) * (svgHeight - padding * 2);
+                return `${cx},${cy}`;
+            }).join(" ");
+
+            box.innerHTML = `
+                <svg viewBox="0 0 ${svgWidth} ${svgHeight}">
+                    <!-- Horizontal Grid Lines -->
+                    <line x1="${padding}" y1="${padding}" x2="${svgWidth - padding}" y2="${padding}" stroke="#e2e8f0" stroke-dasharray="4"/>
+                    <line x1="${padding}" y1="${svgHeight/2}" x2="${svgWidth - padding}" y2="${svgHeight/2}" stroke="#e2e8f0" stroke-dasharray="4"/>
+                    <line x1="${padding}" y1="${svgHeight - padding}" x2="${svgWidth - padding}" y2="${svgHeight - padding}" stroke="#e2e8f0"/>
+
+                    <!-- Trend Line -->
+                    <polyline fill="none" stroke="#0284c7" stroke-width="3" points="${coords}" />
+
+                    <!-- Points -->
+                    ${points.map(p => {
+                        const cx = padding + (p.x / maxX) * (svgWidth - padding * 2);
+                        const cy = svgHeight - padding - ((p.y - minY) / (maxY - minY)) * (svgHeight - padding * 2);
+                        return `
+                            <circle cx="${cx}" cy="${cy}" r="4" fill="#0284c7" />
+                            <text x="${cx}" y="${cy - 8}" font-size="9" text-anchor="middle" fill="#64748b">${p.y.toFixed(0)}%</text>
+                            <text x="${cx}" y="${svgHeight - 10}" font-size="8" text-anchor="middle" fill="#94a3b8">${p.label.split('-').slice(1).join('/')}</text>
+                        `;
+                    }).join("")}
+                </svg>
+            `;
+        }
+
+        // Pure Native SVG Bar Chart Generator
+        function renderNativeSVGBarChart(data) {
+            const box = document.getElementById("bar-chart-box");
+            const analysts = ["Sarah Jenkins", "Marcus Vance", "Elena Rostova", "David Miller"];
+            
+            const counts = analysts.map(name => {
+                return { name, count: data.filter(d => d.analyst === name).length };
+            });
+
+            const svgWidth = 400;
+            const svgHeight = 200;
+            const padding = 40;
+            const maxVal = Math.max(...counts.map(c => c.count), 1);
+
+            const barWidth = 40;
+            const gap = (svgWidth - padding * 2 - (analysts.length * barWidth)) / (analysts.length - 1);
+
+            box.innerHTML = `
+                <svg viewBox="0 0 ${svgWidth} ${svgHeight}">
+                    <line x1="${padding}" y1="${svgHeight - padding}" x2="${svgWidth - padding}" y2="${svgHeight - padding}" stroke="#e2e8f0"/>
+                    ${counts.map((item, i) => {
+                        const x = padding + i * (barWidth + gap);
+                        const h = (item.count / maxVal) * (svgHeight - padding * 2);
+                        const y = svgHeight - padding - h;
+                        return `
+                            <rect x="${x}" y="${y}" width="${barWidth}" height="${h}" fill="#8b5cf6" rx="4"/>
+                            <text x="${x + barWidth/2}" y="${y - 6}" font-size="10" text-anchor="middle" font-weight="bold" fill="#1e293b">${item.count}</text>
+                            <text x="${x + barWidth/2}" y="${svgHeight - 15}" font-size="8" text-anchor="middle" fill="#64748b">${item.name.split(' ')[0]}</text>
+                        `;
+                    }).join("")}
+                </svg>
+            `;
+        }
+
+        // Render Table
+        function renderTable(data) {
+            const tbody = document.getElementById("outcomes-table-body");
+            document.getElementById("record-count").innerText = data.length;
+            tbody.innerHTML = "";
+
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">No matching records.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                let badgeClass = "status-pass";
+                if (item.severity === "Critical") badgeClass = "status-fail";
+                else if (item.severity === "High" || item.severity === "Medium") badgeClass = "status-warn";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700;">${item.metric}</td>
+                        <td>${item.markdownReason}</td>
+                        <td style="font-family:monospace; color:var(--text-secondary);">${item.id}</td>
+                        <td>${item.analyst} <span style="color:var(--text-muted); font-size:0.7rem;">(${item.team})</span></td>
+                        <td><span class="status-badge ${badgeClass}">${item.severity}</span></td>
+                        <td>${item.action}</td>
+                        <td style="text-align:right; font-weight:bold; color:var(--accent-success);">Logged</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Vanilla Export CSV
+        function exportCSV() {
+            let csv = "ID,Date,Metric,Team,Analyst,Score,Severity,Reason\n";
+            window.dashboardData.forEach(d => {
+                csv += `"${d.id}","${d.date}","${d.metric}","${d.team}","${d.analyst}",${d.score},"${d.severity}","${d.markdownReason}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `QA_Dashboard_Export.csv`;
+            a.click();
+        }
+
+        // Drawer Toggle
+        function toggleModal(show) {
+            document.getElementById("powershell-modal").style.display = show ? "flex" : "none";
+        }
+
+        // Simulate PowerShell Pipeline
+        function simulatePowerShellRun() {
+            const consoleBox = document.getElementById("ps-console");
+            const btn = document.getElementById("ps-run-btn");
+            btn.disabled = true;
+
+            consoleBox.innerHTML = "> Initiating PowerShell Ingestion Engine...<br>";
+
+            setTimeout(() => {
+                consoleBox.innerHTML += "> [1/3] Reading raw file: .\\PowerBI_Exports\\QA_Metrics.csv...<br>";
+            }, 400);
+
+            setTimeout(() => {
+                consoleBox.innerHTML += "> [2/3] Transforming objects with ConvertTo-Json -Depth 4...<br>";
+            }, 800);
+
+            setTimeout(() => {
+                const newId = `QA-${Math.floor(1200 + Math.random() * 800)}`;
+                const newRecord = {
+                    id: newId,
+                    date: new Date().toISOString().split('T')[0],
+                    metric: "BCTU",
+                    team: "Alpha",
+                    analyst: "Sarah Jenkins",
+                    score: 96.0,
+                    target: 95.0,
+                    markdownReason: "PowerShell Batch Sample",
+                    severity: "Low",
+                    action: "Automated verification complete"
+                };
+
+                window.dashboardData.unshift(newRecord);
+
+                consoleBox.innerHTML += `<span style="color:#4ade80;">> [3/3] Success! Updated data.js with new item (${newId}).</span><br>`;
+                btn.disabled = false;
+                applyFilters();
+            }, 1300);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+Date,Record ID,Brand,Metric,Team,Team Leader,Agent,Score,Target,Severity,Issue,Action
+2026-11-01,QA-1092,Bright Insurance,Complaints,Alpha,Mark Stevens,Sarah Jenkins,78.5,95,High,Incorrect dispute process,Re-train on Section 4 escalation guidelines
+2026-11-01,QA-1093,General Insurance,Vulnerable Customers,Beta,Mark Stevens,Marcus Vance,82,95,High,Missed vulnerability flag,Conduct 1-on-1 coaching on identification protocol
+2026-11-01,QA-1094,Grand Insurance,Renewals,Gamma,Rachel Vance,Elena Rostova,98,90,Low,None,Standard monitoring
+2026-10-31,QA-1095,Bright Insurance,BCTU,Alpha,Mark Stevens,David Miller,88,95,Medium,Incomplete audit trail,Issue mandatory checklist requirement for closure
+2026-10-31,QA-1096,General Insurance,Amendments,Beta,Mark Stevens,Sarah Jenkins,94.5,90,Low,Minor typos in clause,Provide feedback in weekly review
+2026-10-30,QA-1097,Grand Insurance,Remedial Actions,Gamma,Rachel Vance,Marcus Vance,91,95,Medium,Delayed SLA resolution,Escalate pending tasks to team manager
+2026-10-30,QA-1098,Bright Insurance,Complaints,Alpha,Rachel Vance,Elena Rostova,96,95,Low,None,No action required
+2026-10-29,QA-1099,General Insurance,Vulnerable Customers,Beta,Mark Stevens,David Miller,74,95,Critical,Disclosure omission,Immediate compliance re-certification mandated
+2026-10-29,QA-1100,Grand Insurance,Renewals,Gamma,Rachel Vance,Sarah Jenkins,99,90,Low,None,Good practice recognition
+2026-10-28,QA-1101,Bright Insurance,Amendments,Alpha,Mark Stevens,Marcus Vance,89,90,Medium,Calculation error,Re-check math verification steps
+2026-10-28,QA-1102,General Insurance,BCTU,Beta,Rachel Vance,Elena Rostova,97.5,95,Low,None,Standard monitoring
+2026-10-27,QA-1103,Grand Insurance,Remedial Actions,Gamma,Rachel Vance,David Miller,85,95,High,Incorrect action categorization,Review BCTU taxonomy framework

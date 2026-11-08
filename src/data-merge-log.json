@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-11-06T20:42:12.0959914+02:00",
+  "totalRecords": 30,
+  "sourceDirectory": "C:\\Users\\danie\\OneDrive\\Desktop\\workshop\\JIJI\\github\\service\\quality_analyst_dash\\src\\PowerBI_Data",
+  "filesProcessed": 3,
+  "fileBreakdown": [
+    {
+      "fileName": "KPI_Quality_Score.csv",
+      "fileType": ".csv",
+      "rowsProcessed": 12,
+      "inferredMetric": "KPI Quality Score",
+      "generatedAt": "2026-11-06T20:42:11.0081454+02:00"
+    },
+    {
+      "fileName": "Onshore_Offshore_Audits.csv",
+      "fileType": ".csv",
+      "rowsProcessed": 12,
+      "inferredMetric": "Onshore Offshore Audits",
+      "generatedAt": "2026-11-06T20:42:11.7978086+02:00"
+    },
+    {
+      "fileName": "Operational_Accuracy.csv",
+      "fileType": ".csv",
+      "rowsProcessed": 6,
+      "inferredMetric": "Operational Accuracy",
+      "generatedAt": "2026-11-06T20:42:12.0451422+02:00"
+    }
+  ]
+}

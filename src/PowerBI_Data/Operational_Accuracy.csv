@@ -1,0 +1,7 @@
+Date,ID,Brand,Metric,Team,Team Leader,Agent,Result,Target %,Risk Level,Finding,Recommended Action
+2026-10-02,OP-010,Bright Insurance,Accuracy Rate,Operations,Mark Stevens,Rahul,94,96,Low,Minor variance observed,Continue current controls
+2026-10-06,OP-011,General Insurance,Complaint Handling,Customer Support,Mark Stevens,Alex,88,90,Medium,Backlog increased near month-end,Adjust schedule and redistribute workload
+2026-10-09,OP-012,Grand Insurance,Audit Completion,Quality,Rachel Vance,Marie,97,95,Low,Strong completion rate,Maintain audit cadence
+2026-10-28,OP-013,Bright Insurance,Remedial Actions,Alpha,Mark Stevens,David Miller,85,95,High,Incorrect action categorization,Review BCTU taxonomy framework
+2026-10-29,OP-014,General Insurance,Vulnerable Customers,Beta,Mark Stevens,David Miller,74,95,Critical,Disclosure omission,Immediate compliance re-certification mandated
+2026-10-31,OP-015,Grand Insurance,BCTU,Alpha,Rachel Vance,Sarah Jenkins,88,95,Medium,Incomplete audit trail,Issue mandatory checklist requirement for closure

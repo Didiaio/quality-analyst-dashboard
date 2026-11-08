@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quality Analyst Executive Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0f7ff', 100: '#e0effe', 500: '#0284c7', 600: '#0369a1', 700: '#075985' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- TOP HEADER / NAVBAR -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-sky-500 rounded-lg text-white font-bold text-lg">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide leading-tight">QA Insights & Analytics</h1>
+                    <p class="text-xs text-slate-400">Quality Assurance Dashboard • Enterprise Edition</p>
+                </div>
+            </div>
+
+            <!-- Global Status & Controls -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-2 text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-slate-300">Live Sync Active</span>
+                    <span class="text-slate-500">|</span>
+                    <span id="last-updated-time" class="text-slate-400 font-mono">Updated: Just Now</span>
+                </div>
+
+                <button onclick="togglePowerShellDrawer()" class="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white font-medium rounded-lg shadow transition flex items-center space-x-2">
+                    <i class="fa-solid fa-terminal"></i>
+                    <span class="hidden sm:inline">PowerShell Sync Engine</span>
+                </button>
+
+                <button onclick="exportReport()" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium rounded-lg shadow transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-file-export"></i>
+                    <span>Export</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- FILTER BAR SECTION -->
+        <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex flex-wrap gap-3 items-center w-full lg:w-auto">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                    <i class="fa-solid fa-filter"></i> Filters:
+                </span>
+                
+                <!-- Date Filter -->
+                <select id="filter-date" onchange="applyFilters()" class="text-xs bg-slate-50 border border-slate-300 text-slate-700 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    <option value="today">Today (Live)</option>
+                    <option value="7days" selected>Last 7 Days</option>
+                    <option value="30days">Last 30 Days</option>
+                </select>
+
+                <!-- Metric Selection Filter -->
+                <select id="filter-metric" onchange="applyFilters()" class="text-xs bg-slate-50 border border-slate-300 text-slate-700 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    <option value="all">All Metrics (Global Overview)</option>
+                    <option value="Renewals">Renewals</option>
+                    <option value="Amendments">Amendments</option>
+                    <option value="Vulnerable Customers">Vulnerable Customers</option>
+                    <option value="Complaints">Complaints</option>
+                    <option value="BCTU">BCTU</option>
+                    <option value="Remedial Actions">Remedial Actions</option>
+                </select>
+
+                <!-- Team Filter -->
+                <select id="filter-team" onchange="applyFilters()" class="text-xs bg-slate-50 border border-slate-300 text-slate-700 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    <option value="all">All Teams</option>
+                    <option value="Alpha">Alpha Assurance</option>
+                    <option value="Beta">Beta Audits</option>
+                    <option value="Gamma">Gamma Compliance</option>
+                </select>
+
+                <!-- Analyst Filter -->
+                <select id="filter-analyst" onchange="applyFilters()" class="text-xs bg-slate-50 border border-slate-300 text-slate-700 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    <option value="all">All Analysts</option>
+                    <option value="Sarah Jenkins">Sarah Jenkins</option>
+                    <option value="Marcus Vance">Marcus Vance</option>
+                    <option value="Elena Rostova">Elena Rostova</option>
+                    <option value="David Miller">David Miller</option>
+                </select>
+            </div>
+
+            <!-- Refresh Button -->
+            <button onclick="refreshData(true)" class="text-xs text-sky-600 hover:text-sky-800 font-semibold flex items-center space-x-1 border border-sky-200 bg-sky-50 px-3 py-2 rounded-lg hover:bg-sky-100 transition">
+                <i class="fa-solid fa-rotate"></i>
+                <span>Force Refresh</span>
+            </button>
+        </section>
+
+        <!-- KPI CARDS SUMMARY (6 CORE METRICS FROM DOC) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4" id="kpi-cards-container">
+            <!-- Rendered Dynamically -->
+        </section>
+
+        <!-- ALERTS AND CRITICAL NOTIFICATIONS BANNER -->
+        <section id="alerts-container" class="space-y-2">
+            <!-- Dynamic Alert Badges will be injected here -->
+        </section>
+
+        <!-- VISUALIZATIONS SECTION: 2 COLUMNS -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Chart: Operational Performance & Metrics Trend -->
+            <div class="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-sky-600"></i> Operational Performance & Trends
+                        </h2>
+                        <p class="text-xs text-slate-500">Historical quality compliance volume vs score trend over selected period</p>
+                    </div>
+                    <span class="text-xs bg-slate-100 px-2.5 py-1 rounded-md text-slate-600 font-medium">Daily Track</span>
+                </div>
+                <div class="relative h-72 w-full">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Right Chart: Areas of Impact & Markdowns -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-rose-500"></i> Markdowns & Impact Areas
+                        </h2>
+                        <p class="text-xs text-slate-500">Breakdown of non-compliance root causes</p>
+                    </div>
+                </div>
+                <div class="relative h-72 w-full flex items-center justify-center">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECONDARY VISUALIZATIONS & TEAM PERFORMANCE COMPARISON -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Team vs Individual Performance -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-users text-indigo-500"></i> Analyst & Team Performance Audit
+                        </h2>
+                        <p class="text-xs text-slate-500">Quality score pass rate (%) by individual analyst</p>
+                    </div>
+                </div>
+                <div class="relative h-64 w-full">
+                    <canvas id="analystChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Remedial Action Progress / BCTU Compliance Status -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check text-emerald-600"></i> BCTU & Compliance Audits Status
+                        </h2>
+                        <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Target: 95.0%</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">Summary of Business Compliance Testing Unit findings vs completed Remedial Actions.</p>
+                    
+                    <!-- Progress Bar items -->
+                    <div class="space-y-4 text-xs">
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1">
+                                <span>BCTU Pass Rate</span>
+                                <span class="text-sky-600 font-bold">96.4%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                <div class="bg-sky-500 h-full rounded-full" style="width: 96.4%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1">
+                                <span>Remedial Actions Closed (SLA < 48hrs)</span>
+                                <span class="text-emerald-600 font-bold">88.2%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                <div class="bg-emerald-500 h-full rounded-full" style="width: 88.2%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1">
+                                <span>Vulnerable Customer Protocol Compliance</span>
+                                <span class="text-amber-600 font-bold">91.0%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                <div class="bg-amber-500 h-full rounded-full" style="width: 91%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between text-xs">
+                    <span class="text-slate-600"><i class="fa-solid fa-circle-info text-sky-500 mr-1"></i> 3 Remedial Actions pending manager sign-off</span>
+                    <button onclick="alert('Navigating to detailed remedial action tracker...')" class="text-sky-600 font-bold hover:underline">Review All</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIONABLE OUTCOMES & INSIGHTS TABLE -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                    <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Isolated Areas of Impact & Actionable Recommendations
+                    </h2>
+                    <p class="text-xs text-slate-500">Specific cases isolated for remediation based on current QA observations</p>
+                </div>
+                <span class="text-xs text-slate-400 font-mono">Isolated Requests: <span id="isolated-count" class="font-bold text-slate-700">0</span></span>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left text-xs text-slate-600">
+                    <thead class="bg-slate-50 text-slate-500 uppercase font-semibold text-[10px] tracking-wider border-b border-slate-200">
+                        <tr>
+                            <th class="py-3 px-4">Metric</th>
+                            <th class="py-3 px-4">Impact Category / Issue</th>
+                            <th class="py-3 px-4">Isolated ID</th>
+                            <th class="py-3 px-4">Analyst / Team</th>
+                            <th class="py-3 px-4">Severity</th>
+                            <th class="py-3 px-4">Action Plan / Recommendation</th>
+                            <th class="py-3 px-4 text-right">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="outcomes-table-body" class="divide-y divide-slate-100 font-normal">
+                        <!-- Rendered dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- POWERSHELL BACKEND INTEGRATION DRAWER / MODAL -->
+    <div id="powershell-drawer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-end transition-opacity">
+        <div class="w-full max-w-2xl bg-slate-900 text-slate-200 h-full shadow-2xl flex flex-col border-l border-slate-800">
+            <!-- Drawer Header -->
+            <div class="p-4 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-terminal text-sky-400 text-lg"></i>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">PowerShell Data Pipeline Engine</h3>
+                        <p class="text-xs text-slate-400">Excel / CSV to JSON JavaScript Data File Converter</p>
+                    </div>
+                </div>
+                <button onclick="togglePowerShellDrawer()" class="text-slate-400 hover:text-white text-lg px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Drawer Body -->
+            <div class="p-5 flex-grow overflow-y-auto space-y-4 custom-scrollbar text-xs font-mono">
+                <div class="p-3 bg-slate-800/60 border border-slate-700 rounded-lg text-slate-300">
+                    <p class="font-sans text-xs text-slate-300 mb-2">
+                        <strong>Architecture Note:</strong> Below is the actual PowerShell script used to bridge PowerBI Excel/CSV exports into the frontend <code class="text-sky-300">data.js</code> file formatted as <code class="text-sky-300">window.dashboardData = [...]</code>.
+                    </p>
+                </div>
+
+                <!-- Code Display Box -->
+                <div class="relative">
+                    <span class="absolute right-3 top-3 text-[10px] text-slate-500 uppercase font-semibold">Generate-DataJS.ps1</span>
+                    <pre class="bg-black/80 p-4 rounded-lg border border-slate-800 text-emerald-400 overflow-x-auto text-[11px] leading-relaxed">
+<span class="text-slate-500"># -------------------------------------------------------------</span>
+<span class="text-slate-500"># POWERSHELL INTERPRETER SCRIPT: CSV -> JS DATASET</span>
+<span class="text-slate-500"># -------------------------------------------------------------</span>
+
+<span class="text-sky-400">$csvPath</span>  = <span class="text-amber-300">".\Exports\PowerBI_Quality_Export.csv"</span>
+<span class="text-sky-400">$jsOutputPath</span> = <span class="text-amber-300">".\data.js"</span>
+
+<span class="text-slate-500"># 1. Import raw data from PowerBI CSV Export</span>
+<span class="text-purple-400">Write-Host</span> <span class="text-amber-300">"[INFO] Reading raw quality metrics..."</span> -ForegroundColor Cyan
+<span class="text-sky-400">$rawData</span> = <span class="text-purple-400">Import-Csv</span> -Path <span class="text-sky-400">$csvPath</span>
+
+<span class="text-slate-500"># 2. Convert CSV objects directly to JSON structure</span>
+<span class="text-sky-400">$jsonPayload</span> = <span class="text-sky-400">$rawData</span> | <span class="text-purple-400">ConvertTo-Json</span> -Depth 5 -Compress
+
+<span class="text-slate-500"># 3. Format as a global JS variable to allow serverless opening</span>
+<span class="text-sky-400">$jsContent</span> = <span class="text-amber-300">"window.dashboardData = $jsonPayload;"</span>
+
+<span class="text-slate-500"># 4. Overwrite data.js for immediate dashboard consumption</span>
+<span class="text-purple-400">Set-Content</span> -Path <span class="text-sky-400">$jsOutputPath</span> -Value <span class="text-sky-400">$jsContent</span> -Encoding UTF8
+
+<span class="text-purple-400">Write-Host</span> <span class="text-amber-300">"[SUCCESS] data.js updated successfully."</span> -ForegroundColor Green
+</pre>
+                </div>
+
+                <!-- Simulation Trigger Section -->
+                <div class="pt-4 border-t border-slate-800">
+                    <h4 class="font-sans font-bold text-slate-200 text-xs mb-2">Simulate Script Execution</h4>
+                    <p class="font-sans text-slate-400 text-xs mb-3">Click below to simulate PowerShell converting a new CSV batch into <code class="text-sky-400">window.dashboardData</code>.</p>
+                    
+                    <button onclick="runPowerShellSimulation()" id="btn-run-ps" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-sans font-bold rounded-lg shadow transition flex justify-center items-center space-x-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Execute PowerShell Data Refresh</span>
+                    </button>
+                    
+                    <!-- Console Output Box -->
+                    <div id="ps-console" class="mt-3 bg-black p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-400 h-28 overflow-y-auto hidden">
+                        <!-- Output logs dynamically appended -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drawer Footer -->
+            <div class="p-4 bg-slate-950 border-t border-slate-800 text-right">
+                <button onclick="togglePowerShellDrawer()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-sans font-medium">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMBEDDED DATASET SIMULATOR (`data.js` Pattern) -->
+    <script>
+        /**
+         * SIMULATED `data.js` GENERATED BY POWERSHELL
+         * Defines `window.dashboardData` with realistic QA Records across core metrics.
+         */
+        window.dashboardData = [
+            { id: "QA-1092", date: "2026-11-01", metric: "Complaints", team: "Alpha", analyst: "Sarah Jenkins", score: 78.5, target: 95.0, markdownReason: "Incorrect Dispute Process", severity: "High", action: "Re-train on Section 4 Escalation Guidelines" },
+            { id: "QA-1093", date: "2026-11-01", metric: "Vulnerable Customers", team: "Beta", analyst: "Marcus Vance", score: 82.0, target: 95.0, markdownReason: "Missed Vulnerability Flag", severity: "High", action: "Conduct 1-on-1 coaching on identification protocol" },
+            { id: "QA-1094", date: "2026-11-01", metric: "Renewals", team: "Gamma", analyst: "Elena Rostova", score: 98.0, target: 90.0, markdownReason: "None", severity: "Low", action: "Standard monitoring" },
+            { id: "QA-1095", date: "2026-10-31", metric: "BCTU", team: "Alpha", analyst: "David Miller", score: 88.0, target: 95.0, markdownReason: "Incomplete Audit Trail", severity: "Medium", action: "Issue mandatory checklist requirement for closure" },
+            { id: "QA-1096", date: "2026-10-31", metric: "Amendments", team: "Beta", analyst: "Sarah Jenkins", score: 94.5, target: 90.0, markdownReason: "Minor Typos in Clause", severity: "Low", action: "Provide feedback in weekly review" },
+            { id: "QA-1097", date: "2026-10-30", metric: "Remedial Actions", team: "Gamma", analyst: "Marcus Vance", score: 91.0, target: 95.0, markdownReason: "Delayed SLA Resolution", severity: "Medium", action: "Escalate pending tasks to Team Manager" },
+            { id: "QA-1098", date: "2026-10-30", metric: "Complaints", team: "Alpha", analyst: "Elena Rostova", score: 96.0, target: 95.0, markdownReason: "None", severity: "Low", action: "No action required" },
+            { id: "QA-1099", date: "2026-10-29", metric: "Vulnerable Customers", team: "Beta", analyst: "David Miller", score: 74.0, target: 95.0, markdownReason: "Disclosure Omission", severity: "Critical", action: "Immediate compliance re-certification mandated" },
+            { id: "QA-1100", date: "2026-10-29", metric: "Renewals", team: "Gamma", analyst: "Sarah Jenkins", score: 99.0, target: 90.0, markdownReason: "None", severity: "Low", action: "Good practice recognition" },
+            { id: "QA-1101", date: "2026-10-28", metric: "Amendments", team: "Alpha", analyst: "Marcus Vance", score: 89.0, target: 90.0, markdownReason: "Calculation Error", severity: "Medium", action: "Re-check math verification steps" },
+            { id: "QA-1102", date: "2026-10-28", metric: "BCTU", team: "Beta", analyst: "Elena Rostova", score: 97.5, target: 95.0, markdownReason: "None", severity: "Low", action: "Standard monitoring" },
+            { id: "QA-1103", date: "2026-10-27", metric: "Remedial Actions", team: "Gamma", analyst: "David Miller", score: 85.0, target: 95.0, markdownReason: "Incorrect Action Categorization", severity: "High", action: "Review BCTU taxonomy framework" }
+        ];
+    </script>
+
+    <!-- DASHBOARD LOGIC ENGINE (JS) -->
+    <script>
+        // Metric Definition Configurations
+        const METRIC_CONFIGS = [
+            { key: "Renewals", label: "Renewals", icon: "fa-arrows-rotate", color: "sky", target: "90%" },
+            { key: "Amendments", label: "Amendments", icon: "fa-file-signature", color: "indigo", target: "90%" },
+            { key: "Vulnerable Customers", label: "Vulnerable Cust.", icon: "fa-shield-halved", color: "amber", target: "95%" },
+            { key: "Complaints", label: "Complaints QA", icon: "fa-comments-question", color: "rose", target: "95%" },
+            { key: "BCTU", label: "BCTU Testing", icon: "fa-microscope", color: "purple", target: "95%" },
+            { key: "Remedial Actions", label: "Remedial Actions", icon: "fa-square-check", color: "emerald", target: "95%" }
+        ];
+
+        // Global Chart Instances
+        let performanceChartInstance = null;
+        let impactChartInstance = null;
+        let analystChartInstance = null;
+
+        // Initialize App on DOM Load
+        document.addEventListener("DOMContentLoaded", () => {
+            refreshData(false);
+        });
+
+        // Main Filtering & Rendering Pipeline
+        function applyFilters() {
+            const dateFilter = document.getElementById("filter-date").value;
+            const metricFilter = document.getElementById("filter-metric").value;
+            const teamFilter = document.getElementById("filter-team").value;
+            const analystFilter = document.getElementById("filter-analyst").value;
+
+            // Filter raw dataset
+            let filtered = [...window.dashboardData];
+
+            if (metricFilter !== 'all') {
+                filtered = filtered.filter(item => item.metric === metricFilter);
+            }
+            if (teamFilter !== 'all') {
+                filtered = filtered.filter(item => item.team === teamFilter);
+            }
+            if (analystFilter !== 'all') {
+                filtered = filtered.filter(item => item.analyst === analystFilter);
+            }
+
+            // Update UI Components
+            renderKPICards(filtered);
+            renderAlerts(filtered);
+            renderCharts(filtered);
+            renderOutcomesTable(filtered);
+        }
+
+        // Render KPI Summary Cards
+        function renderKPICards(data) {
+            const container = document.getElementById("kpi-cards-container");
+            container.innerHTML = "";
+
+            METRIC_CONFIGS.forEach(cfg => {
+                const metricData = data.filter(d => d.metric === cfg.key);
+                const count = metricData.length;
+                const avgScore = count > 0 
+                    ? (metricData.reduce((acc, curr) => acc + curr.score, 0) / count).toFixed(1)
+                    : "N/A";
+                
+                // Calculate dummy variance
+                const isPositive = avgScore === "N/A" || parseFloat(avgScore) >= 90;
+                const badgeColor = isPositive ? "text-emerald-600 bg-emerald-50" : "text-rose-600 bg-rose-50";
+                const arrow = isPositive ? "fa-arrow-up" : "fa-arrow-down";
+
+                const cardHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between hover:border-slate-300 transition">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-semibold text-slate-500 truncate">${cfg.label}</span>
+                                <div class="p-2 rounded-lg bg-${cfg.color}-50 text-${cfg.color}-600 text-xs">
+                                    <i class="fa-solid ${cfg.icon}"></i>
+                                </div>
+                            </div>
+                            <div class="text-xl font-bold text-slate-800">${avgScore}%</div>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex justify-between items-center text-[10px]">
+                            <span class="text-slate-400">Target: ${cfg.target}</span>
+                            <span class="font-bold ${badgeColor} px-1.5 py-0.5 rounded flex items-center gap-1">
+                                <i class="fa-solid ${arrow}"></i> ${count} Audits
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        // Render Alert Badges for High Severity Issues
+        function renderAlerts(data) {
+            const alertsContainer = document.getElementById("alerts-container");
+            alertsContainer.innerHTML = "";
+
+            const criticalItems = data.filter(d => d.severity === "Critical" || d.score < 80);
+
+            if (criticalItems.length > 0) {
+                criticalItems.forEach(item => {
+                    const alertHTML = `
+                        <div class="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs flex items-center justify-between shadow-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
+                                <span><strong>Critical Quality Threshold Breach:</strong> ${item.metric} audit for <strong>${item.analyst}</strong> scored <span class="font-bold underline">${item.score}%</span> (${item.markdownReason}).</span>
+                            </div>
+                            <button onclick="filterToAnalyst('${item.analyst}')" class="text-[10px] bg-rose-600 hover:bg-rose-700 text-white font-semibold px-2.5 py-1 rounded">Isolate Request</button>
+                        </div>
+                    `;
+                    alertsContainer.innerHTML += alertHTML;
+                });
+            }
+        }
+
+        // Quick isolation helper
+        function filterToAnalyst(analystName) {
+            document.getElementById("filter-analyst").value = analystName;
+            applyFilters();
+        }
+
+        // Render Dynamic Charts
+        function renderCharts(data) {
+            // 1. PERFORMANCE TREND CHART
+            const ctx1 = document.getElementById("performanceChart").getContext("2d");
+            if (performanceChartInstance) performanceChartInstance.destroy();
+
+            // Group scores by date
+            const dates = [...new Set(data.map(d => d.date))].sort();
+            const scoresByDate = dates.map(d => {
+                const dayItems = data.filter(i => i.date === d);
+                return (dayItems.reduce((acc, c) => acc + c.score, 0) / dayItems.length).toFixed(1);
+            });
+
+            performanceChartInstance = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: dates.length ? dates : ["No Data"],
+                    datasets: [{
+                        label: 'Quality Score Average (%)',
+                        data: scoresByDate.length ? scoresByDate : [0],
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#0284c7'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { min: 60, max: 100, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. MARKDOWNS & IMPACT BREAKDOWN (PIE CHART)
+            const ctx2 = document.getElementById("impactChart").getContext("2d");
+            if (impactChartInstance) impactChartInstance.destroy();
+
+            const markdownCounts = {};
+            data.forEach(d => {
+                if (d.markdownReason !== "None") {
+                    markdownCounts[d.markdownReason] = (markdownCounts[d.markdownReason] || 0) + 1;
+                }
+            });
+
+            const labels2 = Object.keys(markdownCounts);
+            const counts2 = Object.values(markdownCounts);
+
+            impactChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: labels2.length ? labels2 : ["No Markdowns"],
+                    datasets: [{
+                        data: counts2.length ? counts2 : [1],
+                        backgroundColor: ['#f43f5e', '#fbbf24', '#3b82f6', '#a855f7', '#64748b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+                }
+            });
+
+            // 3. ANALYST SCORE COMPARISON (BAR CHART)
+            const ctx3 = document.getElementById("analystChart").getContext("2d");
+            if (analystChartInstance) analystChartInstance.destroy();
+
+            const analysts = ["Sarah Jenkins", "Marcus Vance", "Elena Rostova", "David Miller"];
+            const analystScores = analysts.map(name => {
+                const items = data.filter(d => d.analyst === name);
+                return items.length ? (items.reduce((a, b) => a + b.score, 0) / items.length).toFixed(1) : 0;
+            });
+
+            analystChartInstance = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: analysts,
+                    datasets: [{
+                        label: 'Average Score (%)',
+                        data: analystScores,
+                        backgroundColor: ['#38bdf8', '#818cf8', '#34d399', '#fbbf24'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { min: 50, max: 100, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Render Actionable Outcomes Table
+        function renderOutcomesTable(data) {
+            const tbody = document.getElementById("outcomes-table-body");
+            const isolatedCountElem = document.getElementById("isolated-count");
+            tbody.innerHTML = "";
+
+            isolatedCountElem.innerText = data.length;
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">No records found matching current filter criteria.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                let badgeClass = "bg-slate-100 text-slate-600";
+                if (item.severity === "Critical") badgeClass = "bg-rose-100 text-rose-700 font-bold";
+                else if (item.severity === "High") badgeClass = "bg-amber-100 text-amber-700 font-semibold";
+                else if (item.severity === "Medium") badgeClass = "bg-sky-100 text-sky-700";
+
+                const row = `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4 font-semibold text-slate-700">${item.metric}</td>
+                        <td class="py-3 px-4">${item.markdownReason}</td>
+                        <td class="py-3 px-4 font-mono text-[11px] text-slate-500">${item.id}</td>
+                        <td class="py-3 px-4">${item.analyst} <span class="text-slate-400 text-[10px]">(${item.team})</span></td>
+                        <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-[10px] ${badgeClass}">${item.severity}</span></td>
+                        <td class="py-3 px-4 text-slate-700 font-medium">${item.action}</td>
+                        <td class="py-3 px-4 text-right">
+                            <span class="inline-flex items-center text-emerald-600 text-[11px] font-bold">
+                                <i class="fa-solid fa-check-circle mr-1"></i> Logged
+                            </span>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // PowerShell Drawer Toggle
+        function togglePowerShellDrawer() {
+            const drawer = document.getElementById("powershell-drawer");
+            drawer.classList.toggle("hidden");
+        }
+
+        // Simulate Live PowerShell Refreshes
+        function runPowerShellSimulation() {
+            const consoleBox = document.getElementById("ps-console");
+            const btn = document.getElementById("btn-run-ps");
+            
+            consoleBox.classList.remove("hidden");
+            consoleBox.innerHTML = `> Executing PowerShell Script: Generate-DataJS.ps1...<br>`;
+            btn.disabled = true;
+            btn.classList.add("opacity-50");
+
+            setTimeout(() => {
+                consoleBox.innerHTML += `> [1/3] Reading file: .\\Exports\\PowerBI_Quality_Export.csv...<br>`;
+            }, 400);
+
+            setTimeout(() => {
+                consoleBox.innerHTML += `> [2/3] Transforming objects with ConvertTo-Json -Depth 5...<br>`;
+            }, 800);
+
+            setTimeout(() => {
+                // Generate a randomized fresh entry to show real-time changes
+                const newId = `QA-${Math.floor(1100 + Math.random() * 900)}`;
+                const metrics = ["Renewals", "Amendments", "Vulnerable Customers", "Complaints", "BCTU", "Remedial Actions"];
+                const chosenMetric = metrics[Math.floor(Math.random() * metrics.length)];
+                
+                const newRecord = {
+                    id: newId,
+                    date: new Date().toISOString().split('T')[0],
+                    metric: chosenMetric,
+                    team: "Alpha",
+                    analyst: "Sarah Jenkins",
+                    score: Math.floor(70 + Math.random() * 29),
+                    target: 95.0,
+                    markdownReason: "Simulated Script Batch Issue",
+                    severity: "High",
+                    action: "PowerShell Injected Automated Audit Item"
+                };
+
+                window.dashboardData.unshift(newRecord);
+                
+                consoleBox.innerHTML += `<span class="text-emerald-400">> [3/3] Set-Content data.js complete! Injected 1 new audit record (${newId}).</span><br>`;
+                btn.disabled = false;
+                btn.classList.remove("opacity-50");
+
+                refreshData(true);
+            }, 1200);
+        }
+
+        // Force Refresh Logic
+        function refreshData(userTriggered = false) {
+            applyFilters();
+            const timeElem = document.getElementById("last-updated-time");
+            const now = new Date();
+            timeElem.innerText = `Updated: ${now.toLocaleTimeString()}`;
+            
+            if (userTriggered) {
+                console.log("Dashboard re-rendered from updated dataset!");
+            }
+        }
+
+        // Export Functionality
+        function exportReport() {
+            const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.dashboardData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", jsonStr);
+            downloadAnchor.setAttribute("download", `QA_Dashboard_Export_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+    </script>
+</body>
+</html>
